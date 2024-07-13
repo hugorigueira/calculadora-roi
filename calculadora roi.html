@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de ROI</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    input[type="number"] {
+        width: 100px;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+    <h2>Calculadora de ROI</h2>
+    <form id="roiForm">
+        <label for="custoRegistroBoleto">Custo de Registro de Boleto:</label>
+        <input type="number" id="custoRegistroBoleto" step="0.01" required><br>
+        
+        <label for="totalBoletosRegistrados">Total de Boletos Registrados:</label>
+        <input type="number" id="totalBoletosRegistrados" required><br>
+        
+        <label for="custoBaixaBoleto">Custo de Baixa de Boleto:</label>
+        <input type="number" id="custoBaixaBoleto" step="0.01" required><br>
+        
+        <label for="totalBoletosBaixados">Total de Boletos Baixados:</label>
+        <input type="number" id="totalBoletosBaixados" required><br>
+        
+        <label for="custoManterBoleto">Custo de Manter o Boleto (Inadimplência):</label>
+        <input type="number" id="custoManterBoleto" step="0.01" required><br>
+        
+        <label for="totalBoletosMantidos">Total de Boletos Mantidos (Inadimplência):</label>
+        <input type="number" id="totalBoletosMantidos" required><br>
+        
+        <label for="custosOperacionais">Custos Operacionais (Tempo gasto, correio, etc):</label>
+        <input type="number" id="custosOperacionais" step="0.01" required><br>
+        
+        <label for="quantidadeTransacoesBoleto">Quantidade de Transações via Boleto por Mês:</label>
+        <input type="number" id="quantidadeTransacoesBoleto" required><br>
+        
+        <button type="button" onclick="calcularROI()">Calcular Economia</button>
+    </form>
+
+    <div id="resultado"></div>
+
+    <script>
+        function calcularROI() {
+            // Obter os valores dos campos de entrada
+            let custoRegistroBoleto = parseFloat(document.getElementById("custoRegistroBoleto").value);
+            let totalBoletosRegistrados = parseFloat(document.getElementById("totalBoletosRegistrados").value);
+            let custoBaixaBoleto = parseFloat(document.getElementById("custoBaixaBoleto").value);
+            let totalBoletosBaixados = parseFloat(document.getElementById("totalBoletosBaixados").value);
+            let custoManterBoleto = parseFloat(document.getElementById("custoManterBoleto").value);
+            let totalBoletosMantidos = parseFloat(document.getElementById("totalBoletosMantidos").value);
+            let custosOperacionais = parseFloat(document.getElementById("custosOperacionais").value);
+            let quantidadeTransacoesBoleto = parseFloat(document.getElementById("quantidadeTransacoesBoleto").value);
+
+            // Verificar se todos os campos foram preenchidos corretamente
+            if (isNaN(custoRegistroBoleto) || isNaN(totalBoletosRegistrados) || isNaN(custoBaixaBoleto) ||
+                isNaN(totalBoletosBaixados) || isNaN(custoManterBoleto) || isNaN(totalBoletosMantidos) ||
+                isNaN(custosOperacionais) || isNaN(quantidadeTransacoesBoleto)) {
+                alert("Por favor, preencha todos os campos com valores numéricos válidos.");
+                return;
+            }
+
+            // Calcular o custo total dos boletos
+            let custoTotalBoleto = (custoRegistroBoleto * totalBoletosRegistrados) +
+                                    (custoBaixaBoleto * totalBoletosBaixados) +
+                                    (custoManterBoleto * totalBoletosMantidos) +
+                                    custosOperacionais;
+
+            // Definir o custo do Pix
+            let custoPix = 1.17;
+
+            // Calcular o custo total do Pix
+            let custoTotalPix = quantidadeTransacoesBoleto * custoPix;
+
+            // Calcular a economia
+            let economia = custoTotalBoleto - custoTotalPix;
+
+            // Exibir o resultado
+            let resultadoDiv = document.getElementById("resultado");
+            resultadoDiv.innerHTML = `<h3>Economia ao Substituir Boletos por Pix:</h3>
+                                      <p>R$ ${economia.toFixed(2)}</p>`;
+        }
+    </script>
+</body>
+</html>
